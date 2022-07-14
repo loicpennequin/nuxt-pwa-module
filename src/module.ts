@@ -10,6 +10,7 @@ export default defineNuxtModule<PWAOptions>({
   meta: {
     name: 'pwa'
   },
+  // @ts-ignore
   defaults: nuxt => ({
     icon: {
       source: null,

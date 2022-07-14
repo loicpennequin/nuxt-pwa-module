@@ -16,7 +16,7 @@ coverage
 .output
 
 # Module build
-dist
+# dist
 
 # Environment files
 .env*
