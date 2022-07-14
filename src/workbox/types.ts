@@ -1,5 +1,6 @@
 export interface WorkboxOptions {
-  enabled: boolean
-  workboxVersion: string
-  workboxUrl: string | null
+  swTemplatePath: string;
+  enabled: boolean;
+  workboxVersion: string;
+  workboxUrl?: string | null;
 }
