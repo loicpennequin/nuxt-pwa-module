@@ -9,7 +9,7 @@ export default (pwa: PWAContext) => {
     return;
   }
 
-  const { swTemplatePath, ...options } = pwa.workbox;
+  const { swTemplatePath, autoRegister, ...options } = pwa.workbox;
   const nuxt = useNuxt();
   const head = nuxt.options.app.head as Required<typeof nuxt.options.app.head>;
 
@@ -31,15 +31,17 @@ export default (pwa: PWAContext) => {
     options,
   });
 
-  // Embed script that registers the Service Worker
-  head.script.push({
-    children: [
-      "if ('serviceWorker' in navigator) {",
-      `  window.addEventListener('load', () => navigator.serviceWorker.register('${joinURL(
-        nuxt.options.app.baseURL,
-        "sw.js"
-      )}'))`,
-      "}",
-    ].join("\n"),
-  });
+  if (autoRegister) {
+    // Embed script that registers the Service Worker
+    head.script.push({
+      children: [
+        "if ('serviceWorker' in navigator) {",
+        `  window.addEventListener('load', () => navigator.serviceWorker.register('${joinURL(
+          nuxt.options.app.baseURL,
+          "sw.js"
+        )}'))`,
+        "}",
+      ].join("\n"),
+    });
+  }
 };

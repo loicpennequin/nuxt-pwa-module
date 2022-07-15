@@ -298,7 +298,7 @@ const workbox = (pwa) => {
   if (!pwa.workbox || !pwa.workbox.enabled) {
     return;
   }
-  const { swTemplatePath, ...options } = pwa.workbox;
+  const { swTemplatePath, autoRegister, ...options } = pwa.workbox;
   const nuxt = useNuxt();
   const head = nuxt.options.app.head;
   if (nuxt.options.dev) {
@@ -313,13 +313,15 @@ const workbox = (pwa) => {
     write: true,
     options
   });
-  head.script.push({
-    children: [
-      "if ('serviceWorker' in navigator) {",
-      `  window.addEventListener('load', () => navigator.serviceWorker.register('${joinURL(nuxt.options.app.baseURL, "sw.js")}'))`,
-      "}"
-    ].join("\n")
-  });
+  if (autoRegister) {
+    head.script.push({
+      children: [
+        "if ('serviceWorker' in navigator) {",
+        `  window.addEventListener('load', () => navigator.serviceWorker.register('${joinURL(nuxt.options.app.baseURL, "sw.js")}'))`,
+        "}"
+      ].join("\n")
+    });
+  }
 };
 
 const module = defineNuxtModule({
@@ -374,7 +376,8 @@ const module = defineNuxtModule({
     workbox: {
       enabled: !nuxt.options.dev,
       workboxVersion: "6.5.3",
-      workboxUrl: null
+      workboxUrl: null,
+      autoRegister: true
     }
   }),
   async setup(options, nuxt) {
@@ -388,7 +391,10 @@ const module = defineNuxtModule({
     manifest(pwa);
     meta(pwa);
     workbox(pwa);
-    const { nitro, app: { buildAssetsDir } } = nuxt.options;
+    const {
+      nitro,
+      app: { buildAssetsDir }
+    } = nuxt.options;
     nitro.publicAssets = nitro.publicAssets || [];
     nitro.publicAssets.push({ dir: pwa._rootDir, baseURL: "/" });
     nitro.publicAssets.push({ dir: pwa._assetsDir, baseURL: buildAssetsDir });
