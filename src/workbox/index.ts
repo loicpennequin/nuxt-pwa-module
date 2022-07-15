@@ -28,7 +28,10 @@ export default (pwa: PWAContext) => {
     src: swTemplatePath ?? pwa._resolver.resolve("../templates/workbox/sw.js"),
     dst: join(pwa._rootDir, "sw.js"),
     write: true,
-    options,
+    options: {
+      ...options,
+      dev: process.env.NODE_ENV === "development",
+    },
   });
 
   if (autoRegister) {
